@@ -1,7 +1,6 @@
-const User = require('../../models/users');
-const { decryptFunc } = require('../../utils/hashFunction');
-const { createTokenFunc } = require('../../utils/token');
-
+const User = require('../models/users');
+const { decryptFunc } = require('../utils/hashFunction');
+const { createTokenFunc } = require('../utils/token');
 
 const SignIn = async(req,res)=>{
     const {email,password} = req.body;

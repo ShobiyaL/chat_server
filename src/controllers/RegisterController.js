@@ -1,5 +1,5 @@
-const User = require('../../models/users')
-const {encryptFunc} =require('../../utils/hashFunction')
+const User = require('../models/users')
+const {encryptFunc} =require('../utils/hashFunction')
 
 const Register =async (req,res)=>{
     const {username,email,password} = req.body;

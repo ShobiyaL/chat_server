@@ -5,7 +5,7 @@ const createTokenFunc = (payload)=>{
 }
 
 const validateTokenFunc = (token)=>{
-    return jwt.verify(token, process.env.SECRET_STRING)
+    return jwt.verify(token, process.env.JWT_SECRET_KEY)
 } 
 
 module.exports={createTokenFunc,validateTokenFunc}
