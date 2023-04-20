@@ -64,10 +64,7 @@ const getLastMessage = async(myId,fnId)=>{
                     created_at:-1
                 }
             },{
-                /**
-                 * specifications: The fields to
-                 *   include or exclude.
-                 */
+                
                 $project: {
                     "_id": 0,
                     // "members": 1,
