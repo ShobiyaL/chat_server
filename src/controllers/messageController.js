@@ -67,7 +67,7 @@ const getLastMessage = async(myId,fnId)=>{
                 
                 $project: {
                     "_id": 0,
-                    // "members": 1,
+                     "members": 1,
                     "result": {
                         $sortArray: {input: "$message", sortBy: {created_at: -1}}
                     }
@@ -80,7 +80,7 @@ const getLastMessage = async(myId,fnId)=>{
 
 const getFriends = async(req,res)=>{
    const myId = req.myId;
-   let fnd_msg =[]
+   
    try{
 const friends = await User.find({_id:{$ne:myId}})
  console.log(friends,'all users') 
@@ -88,15 +88,10 @@ let msg;
 for (let i=0;i<friends.length;i++){
     console.log(myId,'present user id', friends[i].id,friends[i].username,'id..,name')
     msg = await getLastMessage(myId,friends[i].id) 
-     
-    fnd_msg = [...fnd_msg,{
-        fnd_info:friends[i],
-        msgInfo:msg
-}]
 }
 //  console.log(msg,'all msgs')
- console.log(fnd_msg)
-res.json(fnd_msg)
+ console.log(msg)
+res.json(msg)
    }catch(error){
     console.log(error)
     res.status(500).json({ message: "Something went wrong", type: "error" });
