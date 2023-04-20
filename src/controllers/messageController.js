@@ -50,52 +50,64 @@ const messageUploadDB = async (req, res) => {
   }
 };
 
-const getLastMessage = async(myId,fnId)=>{
-    
-    const messages = await Conversation.aggregate(
-        [
-            {
-                $match:{
-                    members:{$all:[myId,fnId]}
-                }
-            },
-            {
-                $sort:{
-                    created_at:-1
-                }
-            },{
-                
-                $project: {
-                    "_id": 0,
-                     "members": 1,
-                    "result": {
-                        $sortArray: {input: "$message", sortBy: {created_at: -1}}
-                    }
-                }
-            },
-        ]    
-    )
-    return messages
-}
-
-const getFriends = async(req,res)=>{
-   const myId = req.myId;
-   
-   try{
-const friends = await User.find({_id:{$ne:myId}})
- console.log(friends,'all users') 
-let msg;
-for (let i=0;i<friends.length;i++){
-    console.log(myId,'present user id', friends[i].id,friends[i].username,'id..,name')
-    msg = await getLastMessage(myId,friends[i].id) 
-}
-//  console.log(msg,'all msgs')
- console.log(msg)
-res.json(msg)
-   }catch(error){
-    console.log(error)
-    res.status(500).json({ message: "Something went wrong", type: "error" });
-   }
-}
+const getLastMessage = async (myId, fnId) => {
+    const messages = await Conversation.aggregate([
+      {
+        $match: {
+          members: { $in: [myId] },
+        },
+      },
+      {
+        $unwind: "$message",
+      },
+      {
+        $sort: {
+          "message.createdAt": -1,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          members: {
+            $first: "$members",
+          },
+          messageInfo: {
+            $first: "$message",
+          },
+        },
+      },
+    ]);
+    return messages;
+  };
+  
+  const getFriends = async (req, res) => {
+    const myId = req.myId;
+  
+    try {
+      const friends = await User.find({ _id: { $ne: myId } });
+      console.log(friends, "all users");
+      
+      let response = await getLastMessage(myId, 22);
+      console.log(response);
+     let friendsArr = response.map((fsArr)=>{
+          return fsArr.members
+      })
+      let [a,b] = friendsArr
+      console.log(a.concat(b))
+      let c = a.concat(b)
+      let friendsArray = c.filter((friend)=>{
+        return friend !==myId
+      })
+      res.json({
+response,
+friendsArray
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong", type: "error" });
+    }
+  };
+  
+ 
 
 module.exports = {messageUploadDB,getFriends};
