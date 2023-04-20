@@ -1,7 +1,6 @@
 
 const {validateTokenFunc} = require('../utils/token')
 
-
 const authMiddleware = async(req,res,next)=>{
     const tokenHeader = req.headers.authorization
     try{

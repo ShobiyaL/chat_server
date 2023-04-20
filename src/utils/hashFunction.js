@@ -8,8 +8,9 @@ const encryptFunc = async(plainTextPswd)=>{
 }
 
 const decryptFunc = async(plainTextPswd,hashedPswd)=>{
-    const result = bcrypt.compare(plainTextPswd,hashedPswd)
+    const result = await bcrypt.compare(plainTextPswd,hashedPswd)
     return result ? true : false
 }
+
 
 module.exports ={encryptFunc,decryptFunc}
