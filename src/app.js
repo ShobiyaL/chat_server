@@ -1,7 +1,8 @@
 const express = require('express')
-const cors = require('cors')
-
 const app = express()
+const cors = require("cors");
+
+
 
 const publicRoute = require('./routes/public')
 const privateRoute = require('./routes/private')
