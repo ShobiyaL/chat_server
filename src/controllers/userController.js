@@ -10,13 +10,14 @@ const Register =async (req,res)=>{
         if(!username || !email || !password){
             return res.status(403).json({
                 type:'error',
-                message:'Fields should mnot be empty'
+                message:'Fields should not be empty',
+                
             })
         }
         const userExists = await User.findOne({email})
         if(userExists){
             res.status(400)
-        .json({message:'we already have an account with that email address'})
+        .json({message:'we already have an account with this email address',type:'error'})
         }
         const newPassword = await encryptFunc(password)
         // console.log(newPassword,'after hashing the passsword')
@@ -28,7 +29,8 @@ const Register =async (req,res)=>{
         if(!user){
             return res.status(403).json({
                 type:'error',
-                message:'Provide valid details'
+                message:'Provide valid details',
+                
             })
         }
         res.json({
@@ -41,7 +43,7 @@ const Register =async (req,res)=>{
         res.status(500).json({
             type:'error',
             message:`${error.message}--Problem in SignUp`,
-            error
+             error
         })
     }
 }
@@ -89,7 +91,7 @@ const token = createTokenFunc(payload)
         console.log(error)
         res.status(500).json({
             type:'error',
-            message:`${error.message}--Problem in logging in`,
+            message:`${error.message}--Problem in log in`,
             error
         }) 
     }

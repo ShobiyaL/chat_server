@@ -17,7 +17,10 @@ const authMiddleware = async(req,res,next)=>{
         if(!payload || typeof payload === String){
             return res.status(401).json({ message: "Signin again", type: "error" });
         }
-        req.myId = payload.id
+        req.userObj = {
+            username:payload.username,
+            myId:payload.id
+        }
         next()
     }catch (error) {
         console.log(error, " err-authCheckFunc");

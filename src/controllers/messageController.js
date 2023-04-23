@@ -1,19 +1,18 @@
 const Conversation = require("../models/messages");
-const User = require('../models/users')
-
+const User = require("../models/users");
 
 const messageUploadDB = async (req, res) => {
   const { message, receiverId } = req.body;
 
-  const senderId = req.myId;
-
+  const {myId,username} = req.userObj;
+// console.log(username)
   try {
     let messageInfo = {
-      from: senderId,
+      from: username,
       message: message,
     };
 
-    let members = [receiverId, senderId];
+    let members = [receiverId, myId];
 
     const filter = { members: { $all: members } };
     const update2 = {
@@ -50,64 +49,71 @@ const messageUploadDB = async (req, res) => {
   }
 };
 
-const getLastMessage = async (myId, fnId) => {
-    const messages = await Conversation.aggregate([
-      {
-        $match: {
-          members: { $in: [myId] },
+const getLastMessage = async (myId) => {
+  const response = await Conversation.aggregate([
+    {
+      $match: {
+        members: { $in: [myId] },
+      },
+    },
+    {
+      $unwind: "$message",
+    },
+    {
+      $sort: {
+        "message.createdAt": -1,
+      },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        members: {
+          $first: "$members",
         },
-      },
-      {
-        $unwind: "$message",
-      },
-      {
-        $sort: {
-          "message.createdAt": -1,
+        message: {
+          $first: "$message",
         },
+        
       },
-      {
-        $group: {
-          _id: "$_id",
-          members: {
-            $first: "$members",
-          },
-          messageInfo: {
-            $first: "$message",
-          },
-        },
-      },
-    ]);
-    return messages;
-  };
-  
-  const getFriends = async (req, res) => {
-    const myId = req.myId;
-  
-    try {
-      const friends = await User.find({ _id: { $ne: myId } });
-      console.log(friends, "all users");
-      
-      let response = await getLastMessage(myId, 22);
-      console.log(response);
-     let friendsArr = response.map((fsArr)=>{
-          return fsArr.members
-      })
-      let [a,b] = friendsArr
-      console.log(a.concat(b))
-      let c = a.concat(b)
-      let friendsArray = c.filter((friend)=>{
-        return friend !==myId
-      })
-      res.json({
-response,
-friendsArray
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Something went wrong", type: "error" });
-    }
-  };
-  
- 
+    },
+  ]);
 
-module.exports = {messageUploadDB,getFriends};
+  const newResponse = await Promise.all(response.map(async (item) => {
+    const {members,message}=item;
+   
+    const {updatedAt,_id,...rest}= message;
+    const index = members.indexOf(myId);
+    //  console.log(index);
+    members.splice(index,1);
+    const membersName = await  User.find({_id:members[0]})
+    // console.log(membersName[0].username)
+     const val = { 'members':membersName[0].username,  ...rest };
+   return val  
+}));
+  return newResponse;
+};
+
+const getFriends = async (req, res) => {
+  const myId = req.userObj.myId;
+
+  try {
+    const friends = await User.find({ _id: { $ne: myId } });
+    // console.log(friends, "all users");
+    
+    const response = await getLastMessage(myId);
+    // console.log(response);
+    
+    res.json({
+      response,
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong", type: "error" });
+  }
+};
+
+
+
+
+module.exports = { messageUploadDB, getFriends };
