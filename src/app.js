@@ -2,8 +2,6 @@ const express = require('express')
 const app = express()
 const cors = require("cors");
 
-
-
 const publicRoute = require('./routes/public')
 const privateRoute = require('./routes/private')
 const authMiddleware = require('./middlewares/authMiddleware')
@@ -21,7 +19,12 @@ let corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
+
+
+
 app.use('/api/public',publicRoute)
 app.use('/api/private',authMiddleware, privateRoute)
+
+
 
 module.exports = app;

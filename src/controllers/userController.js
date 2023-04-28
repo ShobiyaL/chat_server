@@ -33,10 +33,24 @@ const Register =async (req,res)=>{
                 
             })
         }
+        const payload = {
+            email:user.email,
+                username:user.username,
+                id:user._id,      
+        }
+        
+        const token = createTokenFunc(payload)
+const userInfo = {
+    _id: user._id,
+            username: user.username,
+            email: user.email,
+            token:token
+}
         res.json({
             type:'success',
                 message:'User created successfully',
-                user
+                userInfo,
+            token
         })
     }catch(error){
         console.log(error)
@@ -81,11 +95,18 @@ const payload = {
 
 const token = createTokenFunc(payload)
 // console.log(token)
+const userInfo = {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    token:token
+}
         res.json({
-            token,
+            
             type:'success',
              message:'User loggedin successfully',
-            user, 
+            userInfo,
+            token
         })
     }catch(error){
         console.log(error)
