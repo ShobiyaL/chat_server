@@ -81,7 +81,8 @@ const getLastMessage = async (myId) => {
   const newResponse = await Promise.all(response.map(async (item) => {
     const {members,message}=item;
    
-    const {updatedAt,_id,...rest}= message;
+    const {updatedAt,...rest}= message;
+    
     const index = members.indexOf(myId);
     //  console.log(index);
     members.splice(index,1);
@@ -114,7 +115,7 @@ const getFriends = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    throw new Error (error)
+    
     res.status(500).json({ message: "Something went wrong", type: "error" });
   }
 };
