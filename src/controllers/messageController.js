@@ -87,7 +87,12 @@ const getLastMessage = async (myId) => {
     members.splice(index,1);
     const membersName = await  User.find({_id:members[0]})
     // console.log(membersName[0].username)
-     const val = { 'members':membersName[0].username,  ...rest };
+    console.log(membersName[0])
+     const val = { 
+      'members':membersName[0].username,
+      'recieverId':membersName[0]._id,
+       ...rest 
+      };
    return val  
 }));
   return newResponse;
@@ -101,7 +106,7 @@ const getFriends = async (req, res) => {
     // console.log(friends, "all users");
     
     const response = await getLastMessage(myId);
-    // console.log(response);
+     console.log(response);
     
     res.json({
       response,
@@ -109,6 +114,7 @@ const getFriends = async (req, res) => {
 
   } catch (error) {
     console.log(error);
+    throw new Error (error)
     res.status(500).json({ message: "Something went wrong", type: "error" });
   }
 };

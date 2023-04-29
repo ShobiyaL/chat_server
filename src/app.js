@@ -20,11 +20,8 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 
-
-
 app.use('/api/public',publicRoute)
 app.use('/api/private',authMiddleware, privateRoute)
-
 
 
 module.exports = app;

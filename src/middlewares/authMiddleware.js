@@ -3,6 +3,7 @@ const {validateTokenFunc} = require('../utils/token')
 
 const authMiddleware = async(req,res,next)=>{
     const tokenHeader = req.headers.authorization
+    // console.log(tokenHeader)
     try{
         if(!tokenHeader){
             res.status(404).json({type:'error',message:'Not a valid request'})
