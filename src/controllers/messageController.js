@@ -115,7 +115,7 @@ const getFriends = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    throw new Error(error)
+    
     res.status(500).json({ message: "Something went wrong", type: "error" });
   }
 };
