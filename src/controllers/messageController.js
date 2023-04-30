@@ -87,11 +87,11 @@ const getLastMessage = async (myId) => {
     //  console.log(index);
     members.splice(index,1);
     const membersName = await  User.find({_id:members[0]})
-    // console.log(membersName[0].username)
-    console.log(membersName[0])
+    //  console.log(membersName[0].username)
+    console.log(membersName)
      const val = { 
       'members':membersName[0].username,
-      'recieverId':membersName[0]._id,
+      'receiverId':membersName[0]._id,
        ...rest 
       };
    return val  
@@ -115,7 +115,7 @@ const getFriends = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    
+    throw new Error(error)
     res.status(500).json({ message: "Something went wrong", type: "error" });
   }
 };
