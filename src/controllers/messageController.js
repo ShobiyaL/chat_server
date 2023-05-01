@@ -107,7 +107,7 @@ const getFriends = async (req, res) => {
     // console.log(friends, "all users");
     
     const response = await getLastMessage(myId);
-     console.log(response);
+    //  console.log(response);
     
     res.json({
       response,
@@ -120,7 +120,33 @@ const getFriends = async (req, res) => {
   }
 };
 
+const getMessages = async (req,res)=>{
+  const myId = req.userObj.myId
+  const receiverId = req.params.id
+  try {
+    const response = await Conversation.aggregate(
+      [
+        {
+          $match:{
+            members:{$all:[myId,receiverId]}
+          }
+        },
+        {
+          $project:{
+            _id:0,
+          }
+        },
+      
+      ]
+    )
+    console.log(response)
+    const receiverDetails = await User.findById(receiverId)
+
+    res.json({ type:'success',convs:response });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", type: "error" });
+  }
+}
 
 
-
-module.exports = { messageUploadDB, getFriends };
+module.exports = { messageUploadDB, getFriends,getMessages };
