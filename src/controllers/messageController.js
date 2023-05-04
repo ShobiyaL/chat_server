@@ -140,7 +140,7 @@ const getMessages = async (req,res)=>{
       ]
     )
     console.log(response)
-    const receiverDetails = await User.findById(receiverId)
+    // const receiverDetails = await User.findById(receiverId)
 
     res.json({ type:'success',convs:response });
   } catch (error) {
